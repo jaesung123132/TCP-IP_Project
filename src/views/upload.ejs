@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>플레이리스트 등록</title>
+    <link rel="stylesheet" href="/css/searchbar.css">
+    <link rel="stylesheet" href="/css/upload.css">
+</head>
+
+<body>
+
+    <%- include('partials/searchbar') %>
+
+        <div class="upload-container">
+            <h2>플레이리스트 등록</h2>
+
+            <!-- AJAX로 처리할 form -->
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="title">제목</label>
+                    <input type="text" id="title" name="title" placeholder="예: 신나는 노동요 모음" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="url">YouTube URL</label>
+                    <input type="url" id="url" name="url" placeholder="https://www.youtube.com/watch?v=..." required>
+                    <p style="font-size: 12px; color: #888; margin-top: 5px;">* 영상 또는 재생목록 주소 입력</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="emotion">분위기 / 감정</label>
+                    <select id="emotion" name="emotion" required>
+                        <option value="" disabled selected>선택해주세요</option>
+                        <option value="Happy">Happy (신남)</option>
+                        <option value="Sad">Sad (슬픔)</option>
+                        <option value="Calm">Calm (차분)</option>
+                        <option value="Excited">Excited (운동/텐션업)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">등록하기</button>
+                <a href="/singer_intro" class="btn-cancel">취소하기</a>
+            </form>
+        </div>
+
+        <!-- 알림 창 -->
+        <div id="upload-alert"></div>
+
+        <script src="/js/upload.js" defer></script>
+
+</body>
+
+</html>

@@ -1,0 +1,303 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: white;
+}
+
+body {
+    font-family: 'ApplegothicNeoSD';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: black;
+    transition: transform 1s, opacity 1s;
+}
+
+body.page-slide-out {
+    transform: translateX(-100%);
+    opacity: 0;
+    /* ✨ FIX: ease-in을 적용해 가속하며 사라지도록 설정 */
+    transition-timing-function: ease-in;
+}
+
+/* 들어오는 페이지: 점점 느리게 (자리를 잡는 느낌) */
+body.page-slide-in {
+    transform: translateX(100%);
+    opacity: 0;
+    /* ✨ FIX: ease-out을 적용해 감속하며 나타나도록 설정 */
+    transition-timing-function: ease-out;
+}
+
+.containor {
+    position: relative;
+    width: 850px;
+    height: 600px;
+    border: 2px solid #FF0000;
+    box-shadow: 0 0 25px #FF0000;
+    overflow: hidden;
+}
+
+.containor .form-box {
+    top: 0;
+    position: absolute;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.form-box.login {
+    left: 0;
+    padding: 0 60px;
+}
+
+.form-box .input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin-top: 25px;
+    font-weight: 600;
+}
+
+.containor .form-box.login .animation {
+    transform: translateX(0%);
+    transition: .7s;
+    opacity: 1;
+    transition-delay: calc(.1s * var(--S));
+}
+
+.containor.active .form-box.login .animation {
+    transform: translateX(-120%);
+    transition: .7s;
+    opacity: 0;
+    transition-delay: calc(.1s * var(--D));
+}
+
+.containor .form-box.Register .animation {
+    transform: translateX(120%);
+    transition: .7s;
+    opacity: 0;
+    filter: blur(10px);
+    transition-delay: calc(.1s * var(--S));
+}
+
+.containor.active .form-box.Register .animation {
+    transform: translateX(0%);
+    transition: .7s;
+    opacity: 1;
+    filter: blur(0px);
+    transition-delay: calc(.1s * var(--li));
+}
+
+
+
+.form-box h2 {
+    text-align: center;
+    font-size: 32px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    border-bottom: 2px solid white;
+    color: white;
+    font-size: 16px;
+    padding-right: 23px;
+    transition: .5s;
+}
+
+.input-box.id input {
+    position: absolute;
+    width: 70%;
+    left: 0;
+}
+
+.input-box.id .btn {
+    position: absolute;
+    width: 25%;
+    font-size: 12px;
+    margin-left: 10px;
+    bottom: 0;
+    right: 0;
+}
+
+.input-box input:focus,
+.input-box input:not(:placeholder-shown) {
+    /* 전체 경로 명시 */
+    border-bottom: 2px solid #FF0000;
+}
+
+.input-box label {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-size: 16px;
+    transition: .5s;
+}
+
+.input-box input:focus~label,
+.input-box input:not(:placeholder-shown)~label {
+    /* 전체 경로 명시 */
+    top: -5px;
+    color: #FF0000;
+}
+
+.btn {
+    position: relative;
+    background: transparent;
+    border-radius: 40px;
+    width: 100%;
+    height: 45px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid #FF0000;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+    height: 300%;
+    width: 100%;
+    background: linear-gradient(#25252b, #FF0000, #25252b, #FF0000);
+    top: -100%;
+    left: 0;
+    z-index: -1;
+    transition: .5s;
+}
+
+.btn:hover:before {
+    top: 0;
+}
+
+.regi-link {
+    text-align: center;
+    font-size: 16px;
+    margin: 20px 0 10px;
+}
+
+.regi-link a {
+    text-decoration: none;
+    color: #FF0000;
+    font-weight: 600;
+}
+
+.regi-link a:hover {
+    text-decoration: underline;
+}
+
+.containor .Register {
+    right: 0;
+    padding: 0px 60px;
+}
+
+.info-content {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.info-content.login {
+    right: 0;
+    text-align: right;
+    padding: 0 40px 60px 150px;
+}
+
+.info-content.login .animation {
+    transform: translateX(0%);
+    transition: .7s;
+    transition-delay: calc(.1s * var(--S));
+    opacity: 1;
+    filter: blur(0px);
+}
+
+.containor.active .info-content.login .animation {
+    transform: translateX(120%);
+    opacity: 0;
+    filter: blur(10px);
+    transition-delay: calc(.1s * var(--D));
+}
+
+.info-content.Register {
+    left: 0;
+    text-align: left;
+    padding: 0 150px 60px 40px;
+    pointer-events: none;
+}
+
+.info-content.Register .animation {
+    transform: translateX(-120%);
+    transition: .7s;
+    opacity: 0;
+    filter: blur(10px);
+    transition-delay: calc(.1s * var(--S));
+}
+
+.containor.active .info-content.Register .animation {
+    transform: translateX(0%);
+    transition: .7s;
+    opacity: 1;
+    filter: blur(0);
+    transition-delay: calc(.1s * var(--li));
+
+}
+
+.info-content h2 {
+    text-transform: uppercase;
+    font-size: 36px;
+}
+
+.info-content p {
+    font-size: 16px;
+}
+
+.containor .curved-shape {
+    position: absolute;
+    right: 0;
+    top: -5px;
+    height: 750px;
+    width: 1050px;
+    background: linear-gradient(45deg, black, #FF0000);
+    border-top: 3px solid #FF0000;
+    transform: rotate(8deg) skewY(45deg);
+    transform-origin: bottom right;
+    transition: 1.5s;
+    transition-delay: 1.6s;
+}
+
+.containor.active .curved-shape {
+    transform: rotate(0deg) skewY(0deg);
+    transition-delay: .5s;
+}
+
+.containor .curved-shape2 {
+    position: absolute;
+    left: -50px;
+    top: 100%;
+    height: 800px;
+    width: 1200px;
+    background: black;
+    border-top: 3px solid #FF0000;
+    transform: rotate(0deg) skewY(0deg);
+    transform-origin: bottom lefts;
+    transition: 1.5s;
+    transition-delay: .5s;
+}
+
+.containor.active .curved-shape2 {
+    transform: rotate(-18deg) skewY(-41deg) translateY(-330px);
+    transition-delay: 1.2s;
+}   

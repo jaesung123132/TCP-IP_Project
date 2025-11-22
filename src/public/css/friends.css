@@ -1,0 +1,200 @@
+/* 1. 전체 컨테이너 및 공통 스타일 */
+.friends-container {
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    background: black;
+    font-family: 'Pretendard', sans-serif;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.friends-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.friends-list {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+/* 2. 친구 목록 아이템 (텍스트 코드의 구조 채택) */
+.friend-item {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* 양쪽 정렬 */
+    align-items: center;
+    padding: 12px 10px;
+    border-radius: 3px;
+    transition: 0.2s ease-in-out;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.friend-item:hover {
+    background-color: #272727;
+}
+
+/* 알림이 왔을 때 배경색 변경 (파일 코드 기능) */
+.friend-item.alert-active {
+    background-color: rgba(255, 0, 0, 0.2); /* 너무 빨갛지 않게 투명도 조절 */
+}
+
+/* 3. 프로필 사진 및 이름 그룹 (텍스트 코드 기능) */
+.friend-info-group {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    flex: 1; /* 남은 공간 차지 */
+}
+
+.friend-info-group img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+    border: 1px solid #444;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+}
+
+.friend-info-group img:hover {
+    transform: scale(1.1);
+    border-color: #FF0000;
+}
+
+.friend-name {
+    font-size: 15px;
+    color: #c0bebe;
+    white-space: nowrap;
+}
+
+/* 온라인일 때 이름 색상 (텍스트 코드 스타일 - 흰색이 더 깔끔함) */
+.friend-item.online .friend-name {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* 4. 상태 표시 점 (텍스트 코드 기능) */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #555;
+    flex-shrink: 0;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.friend-item.online .status-dot {
+    background-color: #4caf50 !important;
+    box-shadow: 0 0 5px #4caf50;
+}
+
+/* 5. 알림 벨 아이콘 (파일 코드 기능 복원) */
+.alert-bell {
+    margin-left: 10px; /* 이름과 간격 */
+    margin-right: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.alert-bell .bell-path {
+    fill: #8a8a8a; /* 기본 회색 */
+}
+
+.alert-bell.active .bell-path {
+    fill: #FFD700; /* 활성화 시 노란색 */
+}
+
+/* 벨 흔들리는 애니메이션 */
+.alert-bell.active {
+    animation: bell-shake 1.4s ease-in-out infinite;
+}
+
+@keyframes bell-shake {
+    0%, 60% { transform: translateX(0px); }
+    65% { transform: translateX(-2px); }
+    70% { transform: translateX(2px); }
+    75% { transform: translateX(-2px); }
+    80% { transform: translateX(2px); }
+    85% { transform: translateX(-1px); }
+    90% { transform: translateX(0px); }
+    100% { transform: translateX(0px); }
+}
+
+/* 6. 친구 요청 목록 UI (텍스트 코드 기능) */
+.request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #222;
+    border-radius: 5px;
+    margin-bottom: 8px;
+}
+
+.request-info {
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 14px;
+}
+
+.request-info img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 8px;
+    object-fit: cover;
+}
+
+.request-actions button {
+    width: 40px; /* 버튼 크기 약간 키움 */
+    height: 24px;
+    border-radius: 4px; /* 둥근 네모 */
+    border: none;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.btn-accept { background: #4caf50; color: white; }
+.btn-decline { background: #f44336; color: white; }
+.btn-accept:hover { background: #45a049; }
+.btn-decline:hover { background: #d32f2f; }
+
+/* 7. 유튜브 미리보기 UI (이전 대화 기능 통합) */
+.youtube-preview {
+    cursor: pointer;
+    margin-top: 8px;
+    border: 1px solid #333;
+    padding: 8px;
+    border-radius: 8px;
+    background: #1a1a1a;
+    display: inline-block;
+}
+.youtube-preview img {
+    max-width: 120px;
+    border-radius: 4px;
+    display: block;
+    margin-bottom: 4px;
+}
+.youtube-preview p {
+    margin: 0;
+    font-size: 11px;
+    color: #aaa;
+}
+.youtube-preview:hover {
+    background: #2a2a2a;
+}

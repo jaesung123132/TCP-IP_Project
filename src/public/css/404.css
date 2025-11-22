@@ -1,0 +1,33 @@
+ body {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     min-height: 100vh;
+     text-align: center;
+     background-color: #1a1a1a;
+     color: white;
+     font-family: Arial, sans-serif;
+ }
+
+ .error-container {
+     padding: 40px;
+     border-radius: 10px;
+     background-color: #2a2a2a;
+ }
+
+ h1 {
+     font-size: 5rem;
+     color: #FF0000;
+     margin: 0;
+ }
+
+ p {
+     font-size: 1.5rem;
+     margin: 10px 0;
+ }
+
+ a {
+     color: #FF0000;
+     text-decoration: none;
+     font-weight: bold;
+ }
