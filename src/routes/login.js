@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
     const { _id, _pwd } = req.body;
 
     try {
-        const sql = "SELECT * FROM users WHERE username = ?";
+        const sql = "SELECT * FROM users WHERE email = ?";
         const [users] = await pool.query(sql, [_id]);
 
         if (users.length === 0) {

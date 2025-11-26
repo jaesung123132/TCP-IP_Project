@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    // 1. 유튜브 재생 (기존 유지)
+    // 1. 유튜브 재생
     function playPlaylist(listId) {
         const modal = document.createElement("div");
         modal.id = "youtube-modal";
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // 2. 프로필 업로드 (기존 유지)
+    // 2. 프로필 업로드
     const profileImg = document.getElementById("profileImg");
     const fileInput = document.getElementById("profileUpload");
     if (profileImg && fileInput) {
@@ -40,32 +40,32 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const res = await fetch("/singer_intro/profile/upload", { method: "POST", body: fd });
                 const data = await res.json();
-                if (data.success) { alert("프로필 사진이 변경되었습니다!"); location.reload(); } 
+                if (data.success) { alert("프로필 사진이 변경되었습니다!"); location.reload(); }
                 else { alert("업로드 실패: " + data.message); }
             } catch (e) { console.error(e); alert("오류 발생"); }
         });
     }
 
-    // 3. 로그아웃 (기존 유지)
+    // 3. 로그아웃
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             try {
-                const response = await fetch('/api/logout', { 
+                const response = await fetch('/api/logout', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }
                 });
                 const result = await response.json();
-                if (result.success) { alert('로그아웃 되었습니다.'); window.location.href = '/login'; } 
+                if (result.success) { alert('로그아웃 되었습니다.'); window.location.href = '/login'; }
                 else { alert('로그아웃 실패'); }
             } catch (error) { console.error(error); }
         });
     }
 
-    // 4. [핵심] 친구 신청/수락/삭제 버튼 통합 처리
+    // 4.친구 신청/수락/삭제 버튼 통합 처리
     const actionBtns = document.querySelectorAll('.action-btn');
     actionBtns.forEach(btn => {
         btn.addEventListener('click', async () => {
-            const action = btn.dataset.action; // request, accept, delete
+            const action = btn.dataset.action;
             const targetId = btn.dataset.targetId;
 
             if (!confirm("정말 진행하시겠습니까?")) return;

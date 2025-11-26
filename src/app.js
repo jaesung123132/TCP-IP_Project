@@ -29,10 +29,8 @@ app.use(async (req, res, next) => {
         try {
             // DB에서 현재 로그인한 유저의 프로필 이미지 조회
             const [rows] = await pool.query('SELECT profile_image FROM users WHERE id = ?', [req.session.userId]);
-            
+
             if (rows.length > 0) {
-                // 이미지가 있으면 사용, 없으면 기본 이미지(Default_profile) 사용
-                // (만약 실제 파일이 .jpg라면 아래 확장자를 .jpg로 수정해주세요!)
                 res.locals.myProfileImg = rows[0].profile_image || '/uploads/profile/Default_profile.png';
             }
         } catch (err) {

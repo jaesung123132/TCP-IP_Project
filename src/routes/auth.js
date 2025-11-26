@@ -27,7 +27,7 @@ router.post('/logout', (req, res) => {
     });
 });
 
-// 3. [수정됨] 실제 검색 API 구현
+// 실제 검색 API 구현
 router.get('/search', async (req, res) => {
     const q = req.query.q; // 검색어
 
@@ -51,7 +51,7 @@ router.get('/search', async (req, res) => {
               AND p.status = 'AVAILABLE'
             ORDER BY p.created_at DESC
         `;
-        
+
         const searchQuery = `%${q}%`; // 앞뒤로 % 붙여서 부분 검색 허용
         const [results] = await pool.query(sql, [searchQuery]);
 

@@ -8,15 +8,15 @@ router.get('/', async (req, res) => {
     if (!myId) return res.status(401).json({ message: '로그인 필요' });
 
     try {
-        // [A] 이미 친구인 목록 (ACCEPTED)
+        //이미 친구인 목록 (ACCEPTED)
         const sqlFriends = `
             SELECT u.id AS friend_id, u.username AS friend_name, u.profile_image
             FROM friends f
             JOIN users u ON u.id = IF(f.user_one_id = ?, f.user_two_id, f.user_one_id)
             WHERE (f.user_one_id = ? OR f.user_two_id = ?) AND f.status = 'ACCEPTED'
         `;
-        
-        // [B] 나에게 온 친구 신청 목록 (PENDING & 내가 보낸 게 아님)
+
+        //나에게 온 친구 신청 목록 (PENDING & 내가 보낸 게 아님)
         const sqlRequests = `
             SELECT u.id AS friend_id, u.username AS friend_name, u.profile_image
             FROM friends f
@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 // 2. 친구 관련 액션 (신청, 수락, 삭제) - 기존 유지
 router.post('/action', async (req, res) => {
     const myId = req.session.userId;
-    const { targetId, action } = req.body; 
+    const { targetId, action } = req.body;
 
     if (!myId) return res.status(401).json({ success: false, message: '로그인 필요' });
     if (myId == targetId) return res.status(400).json({ success: false, message: '본인 불가' });

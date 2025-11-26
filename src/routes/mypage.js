@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 const multer = require('multer');
-const path = require('path'); 
+const path = require('path');
 const fs = require('fs');
 
 console.log("mypage 라우트 로딩됨");
@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
             }
         });
 
-        // [C] 친구 관계 상태 정밀 분석 (✨ 여기가 핵심입니다!)
+        // [C] 친구 관계 상태 정밀 분석
         let relationStatus = 'NONE'; // 기본값
 
         if (userId != pageUserId) {
@@ -96,17 +96,17 @@ router.get('/', async (req, res) => {
         }
 
         const profileName = user ? user.username : "알 수 없음";
-        const profileImage = (user && user.profile_image) 
-            ? user.profile_image 
+        const profileImage = (user && user.profile_image)
+            ? user.profile_image
             : "/uploads/profile/Default_profile.png";
 
-        // [D] 데이터 전달 (relationStatus가 꼭 있어야 함)
+        // [D] 데이터 전달
         res.render("singer_intro", {
             profileName: profileName,
             profileImage: profileImage,
             playlists: processed,
             isMe: userId == pageUserId,
-            relationStatus: relationStatus, // ✨ 이 변수가 없어서 에러가 난 것입니다.
+            relationStatus: relationStatus,
             targetUserId: pageUserId
         });
 

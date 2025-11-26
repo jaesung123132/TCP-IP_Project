@@ -4,10 +4,10 @@ const homepage = document.querySelector(".homepage");
 const recentSearches = document.querySelector(".recent-searches");
 const searchForm = document.getElementById('search-form');
 const friendListUl = document.getElementById('friend-list-ul');
-const requestListUl = document.getElementById('request-list-ul'); 
-const requestArea = document.getElementById('friend-requests-area'); 
+const requestListUl = document.getElementById('request-list-ul');
+const requestArea = document.getElementById('friend-requests-area');
 
-// [추가됨] 사이드바 및 알림 관련 요소
+//사이드바 및 알림 관련 요소
 const friendSidebar = document.getElementById('friendSidebar');
 const toggleBtn = document.getElementById('toggle-sidebar-btn');
 const msgBadge = document.getElementById('msgBadge');
@@ -16,13 +16,12 @@ let isSidebarOpen = false;
 let ws;
 let myId = null;
 
-// [추가됨] 사이드바 토글 함수
-window.toggleSidebar = function() {
+//사이드바 토글 함수
+window.toggleSidebar = function () {
     isSidebarOpen = !isSidebarOpen;
     if (isSidebarOpen) {
         friendSidebar.classList.add('open');
-        // 사이드바 열었으니 배지 알림 제거
-        if(msgBadge) msgBadge.classList.remove('active');
+        if (msgBadge) msgBadge.classList.remove('active');
     } else {
         friendSidebar.classList.remove('open');
     }
@@ -94,7 +93,7 @@ async function fetchCurrentUser() {
     }
 }
 
-// [원본 유지] 섹션 로딩 로직
+//섹션 로딩 로직
 async function loadAllSections() {
     const recommendList = document.getElementById('list-recommend');
     const happyList = document.getElementById('list-happy');
@@ -130,7 +129,7 @@ async function loadAllSections() {
     if (excitedResponse?.ok) loadAndInject(await excitedResponse.json(), excitedList);
 }
 
-// [원본 유지] 플레이리스트 주입 로직
+//플레이리스트 주입 로직
 async function loadAndInject(playlists, targetUlElement) {
     if (!targetUlElement || !playlists) return;
 
@@ -207,18 +206,18 @@ async function loadFriendsList() {
             }
         }
 
-        // [수정됨] 친구 목록 렌더링 (왼쪽 정렬 + 알림 벨 추가)
+        //친구 목록 렌더링
         friendListUl.innerHTML = '';
-        
+
         if (!friends || friends.length === 0) {
             friendListUl.innerHTML = '<li style="padding:15px; color:#777; text-align:center;">친구가 없습니다.</li>';
         } else {
             friends.forEach(friend => {
                 const li = document.createElement('li');
                 li.className = 'friend-item offline';
-                // [중요] 순서 변경을 위한 ID 저장
+                //순서 변경을 위한 ID 저장
                 li.id = `friend-${friend.friend_id}`;
-                li.dataset.id = friend.friend_id; 
+                li.dataset.id = friend.friend_id;
 
                 const profileImg = friend.profile_image || '/uploads/profile/Default_profile.png';
                 const youtubeId = extractYouTubeId(friend.status_message);
@@ -233,7 +232,7 @@ async function loadFriendsList() {
                     </div>`;
                 }
 
-                // [수정됨] 왼쪽 정렬을 위한 HTML 구조 변경
+                // 왼쪽 정렬을 위한 HTML 구조 변경
                 li.innerHTML = `
                     <img src="${profileImg}" 
                          onclick="event.stopPropagation(); location.href='/singer_intro?id=${friend.friend_id}'"
@@ -302,7 +301,7 @@ function connectMainWebSocket() {
                 if (isOnline) updateFriendStatus(friendId, true);
             }
         } else if (data.type === 'new_message_notification') {
-            // [중요] 메시지 수신 시 알림 함수 호출
+            // 메시지 수신 시 알림 함수 호출
             handleIncomingMessage(data.senderId);
         }
     };
@@ -316,7 +315,7 @@ function connectMainWebSocket() {
     };
 }
 
-// [추가됨] 메시지 수신 시 순서 변경 및 알림 처리 함수
+// 메시지 수신 시 순서 변경 및 알림 처리 함수
 function handleIncomingMessage(senderId) {
     // 1. 보낸 사람의 리스트 아이템 찾기 (ID 활용)
     const friendItem = document.getElementById(`friend-${senderId}`);
@@ -327,16 +326,16 @@ function handleIncomingMessage(senderId) {
 
         // 3. 사이드바가 닫혀있으면 -> 토글 버튼에 배지 켜기
         if (!isSidebarOpen) {
-            if(msgBadge) msgBadge.classList.add('active');
-        } 
-        
-        // 4. 개별 친구의 알림 벨 활성화 (강제 빨강 + 애니메이션)
+            if (msgBadge) msgBadge.classList.add('active');
+        }
+
+        // 4. 개별 친구의 알림 벨 활성화
         const bell = friendItem.querySelector('.alert-bell');
         const bellPaths = friendItem.querySelectorAll('.bell-path');
         if (bell) {
             bell.classList.add("active");
             friendItem.classList.add("alert-active");
-            // SVG 색상 강제 변경
+
             bellPaths.forEach(path => {
                 path.setAttribute("fill", "#FF0000");
                 path.style.fill = "#FF0000";
@@ -358,7 +357,7 @@ function updateFriendStatus(friendId, isOnline) {
     }
 }
 
-// [원본 유지] 검색 기능
+// 검색 기능
 function setupSearch() {
     if (!searchInput || !searchContainer || !homepage) return;
     let blurTimeout;
@@ -386,7 +385,7 @@ function setupSearch() {
     });
 }
 
-// [원본 유지] 검색 실행 로직
+// 검색 실행 로직
 async function performSearch(query) {
     const contentContainer = document.querySelector('.content-container');
     if (!contentContainer) return;
@@ -402,7 +401,7 @@ async function performSearch(query) {
     }
 }
 
-// [원본 유지] 검색 결과 표시
+//검색 결과 표시
 function displaySearchResults(results, query, container) {
     container.innerHTML = '';
     const contentDiv = document.createElement('div');
@@ -465,7 +464,7 @@ function displaySearchResults(results, query, container) {
     setupScrollButtons();
 }
 
-// [원본 유지] 음악 재생 모달
+//음악 재생 모달
 function playMusic(listId, isVideo = false) {
     const existingModal = document.getElementById('youtube-modal');
     if (existingModal) existingModal.remove();
@@ -508,7 +507,7 @@ function playMusic(listId, isVideo = false) {
     document.body.appendChild(modalOverlay);
 }
 
-// [원본 유지] 스크롤 버튼 로직
+//스크롤 버튼 로직
 function setupScrollButtons() {
     const sections = document.querySelectorAll('.content');
 
@@ -531,7 +530,7 @@ function setupScrollButtons() {
     });
 }
 
-// [원본 유지] 추천 탭 캐러셀 로직
+// 추천 탭 캐러셀 로직
 function initRecommendCarousel() {
     const track = document.getElementById('list-recommend');
     if (!track) {
@@ -558,7 +557,7 @@ function initRecommendCarousel() {
     function updateSlidePosition() {
         const slideWidth = listContainer.offsetWidth;
         if (slideWidth === 0) return;
-        track.style.transform = `translateX(-${index * slideWidth}px)`; 
+        track.style.transform = `translateX(-${index * slideWidth}px)`;
         track.style.transition = "transform 0.5s ease";
     }
 
@@ -595,7 +594,7 @@ function initRecommendCarousel() {
     window.addEventListener('resize', updateSlidePosition);
 }
 
-// [원본 유지] 로그아웃 로직
+// 로그아웃 로직
 function setupLogoutButton() {
     const logoutBtn = document.querySelector('.logout-btn');
     if (logoutBtn) {
@@ -614,8 +613,8 @@ function setupLogoutButton() {
     }
 }
 
-// [원본 유지] 친구 요청 수락/거절
-window.respondToRequest = async function(targetId, action) {
+//친구 요청 수락/거절
+window.respondToRequest = async function (targetId, action) {
     if (!confirm(action === 'accept' ? '수락하시겠습니까?' : '거절하시겠습니까?')) return;
 
     try {

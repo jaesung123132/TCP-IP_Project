@@ -18,15 +18,13 @@ body {
 body.page-slide-out {
     transform: translateX(-100%);
     opacity: 0;
-    /* ✨ FIX: ease-in을 적용해 가속하며 사라지도록 설정 */
     transition-timing-function: ease-in;
 }
 
-/* 들어오는 페이지: 점점 느리게 (자리를 잡는 느낌) */
+/* 들어오는 페이지: 점점 느리게*/
 body.page-slide-in {
     transform: translateX(100%);
     opacity: 0;
-    /* ✨ FIX: ease-out을 적용해 감속하며 나타나도록 설정 */
     transition-timing-function: ease-out;
 }
 
@@ -300,4 +298,4 @@ body.page-slide-in {
 .containor.active .curved-shape2 {
     transform: rotate(-18deg) skewY(-41deg) translateY(-330px);
     transition-delay: 1.2s;
-}   
+}

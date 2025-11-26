@@ -1,8 +1,4 @@
-/* =============================================
-   :root - 전역 변수 선언 (원본 유지)
-   ============================================= */
 :root {
-    /* Colors */
     --primary-color: #FF0000;
     --background-color: black;
     --text-color: white;
@@ -15,7 +11,6 @@
     --shadow-color: rgba(255, 0, 0, 0.7);
     --overlay-color: rgba(56, 54, 54, 0.3);
 
-    /* Font Sizes */
     --font-size-xl: 32px;
     --font-size-lg: 24px;
     --font-size-md: 20px;
@@ -23,7 +18,6 @@
     --font-size-xs: 0.8125rem;
     --font-size-xxs: 0.6875rem;
 
-    /* Sizing & Spacing */
     --top-bar-height: 100px;
     --border-radius-round: 999px;
     --border-radius-large: 40px;
@@ -41,19 +35,15 @@ body {
     overflow-x: hidden;
 }
 
-/* =============================================
-   [수정됨] 1. 메인 레이아웃 (Flex 제거 -> 전체 너비)
-   ============================================= */
 .main-wrapper {
-    display: block; /* flex 제거 */
+    display: block;
     width: 100%;
     height: calc(100vh - var(--top-bar-height));
     position: relative;
 }
 
-/* [수정됨] 메인 콘텐츠 (전체 너비 사용) */
 .content-container {
-    width: 100%; /* 90% -> 100% */
+    width: 100%;
     padding: 20px 40px;
     box-sizing: border-box;
     overflow-y: auto;
@@ -64,31 +54,26 @@ body {
     display: none;
 }
 
-/* =============================================
-   [수정됨] 2. 친구 사이드바 (서랍형 Drawer)
-   ============================================= */
 .friend-sidebar {
     position: fixed;
     top: 0;
-    right: -320px; /* 평소에는 숨김 */
-    width: 300px;  /* 너비 확보 */
+    right: -320px;
+    width: 300px;
     height: 100vh;
     background: #000;
     border-left: 1px solid #333;
-    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 애니메이션 */
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     padding: 20px 0;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
 }
 
-/* 사이드바 열림 상태 */
 .friend-sidebar.open {
     right: 0;
 }
 
-/* 닫기 버튼 */
 .close-sidebar-btn {
     position: absolute;
     top: 15px;
@@ -100,12 +85,11 @@ body {
     cursor: pointer;
     z-index: 1002;
 }
-.close-sidebar-btn:hover { color: white; }
 
+.close-sidebar-btn:hover {
+    color: white;
+}
 
-/* =============================================
-   [추가됨] 3. 친구 목록 스타일 (왼쪽 정렬 & 알림)
-   ============================================= */
 .friends-list {
     padding: 0;
     margin: 0;
@@ -116,7 +100,7 @@ body {
 .friend-item {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* [핵심] 왼쪽 정렬 */
+    justify-content: flex-start;
     padding: 12px 15px;
     width: 100%;
     box-sizing: border-box;
@@ -129,7 +113,6 @@ body {
     background-color: #1a1a1a;
 }
 
-/* 텍스트 정보 왼쪽 정렬 */
 .text-info {
     display: flex;
     flex-direction: column;
@@ -180,7 +163,6 @@ body {
     box-shadow: 0 0 4px #4caf50;
 }
 
-/* 알림 벨 스타일 */
 .bell-wrapper {
     margin-left: auto;
     padding-left: 10px;
@@ -191,9 +173,8 @@ body {
     transition: transform 0.2s;
 }
 
-/* [핵심] 알림 활성화 시 스타일 */
 .alert-bell.active .bell-path {
-    fill: #FF0000 !important; /* 강제 빨강 */
+    fill: #FF0000 !important;
     transition: fill 0.3s ease;
 }
 
@@ -202,11 +183,15 @@ body {
 }
 
 @keyframes bell-shake {
-    0% { transform: rotate(-15deg); }
-    100% { transform: rotate(15deg); }
+    0% {
+        transform: rotate(-15deg);
+    }
+
+    100% {
+        transform: rotate(15deg);
+    }
 }
 
-/* 유튜브 미리보기 */
 .youtube-preview {
     margin-top: 5px;
     width: 100%;
@@ -214,10 +199,6 @@ body {
     cursor: pointer;
 }
 
-
-/* =============================================
-   [추가됨] 4. 토글 버튼 & 배지
-   ============================================= */
 #toggle-sidebar-btn {
     position: fixed;
     bottom: 30px;
@@ -241,7 +222,6 @@ body {
     transform: scale(1.1);
 }
 
-/* 전체 알림 배지 (버튼 위) */
 .toggle-badge {
     position: absolute;
     top: -5px;
@@ -263,15 +243,22 @@ body {
 }
 
 @keyframes pulse-badge {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
-    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
-    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
 }
 
-
-/* =============================================
-   Buttons (원본 유지)
-   ============================================= */
 .arrow-buttons {
     display: flex;
 }
@@ -301,9 +288,6 @@ body {
     pointer-events: none;
 }
 
-/* =============================================
-   Content & Lists (원본 유지)
-   ============================================= */
 .content {
     display: flex;
     flex-direction: column;
@@ -328,7 +312,6 @@ body {
     align-items: center;
     width: 100%;
     overflow-x: auto;
-    /* 스크롤 복구 */
     scroll-behavior: smooth;
 }
 
@@ -347,7 +330,6 @@ body {
     margin: 10px;
     list-style: none;
     white-space: nowrap;
-    /* 한 줄 유지 */
 }
 
 .list-box ul .list {
@@ -370,10 +352,6 @@ body {
     text-overflow: ellipsis;
 }
 
-
-/* =============================================
-   Music Profile Item (원본 유지)
-   ============================================= */
 .list .musicprofile {
     width: 10rem;
     height: 10rem;
@@ -452,9 +430,6 @@ body {
     text-decoration: underline;
 }
 
-/* =============================================
-   [리팩터링] 추천탭 전용 캐러셀 (원본 유지)
-   ============================================= */
 .recommend-section .list-box {
     width: 100%;
     overflow: hidden;

@@ -8,7 +8,7 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'root1234',
-    database: 'music_db', // ⚠ 너 서버에서 쓰는 DB명!
+    database: 'music_db',
     port: 3306,
     waitForConnections: true,
     connectionLimit: 10,
