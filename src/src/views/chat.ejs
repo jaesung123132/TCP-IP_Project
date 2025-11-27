@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/chat.css">
+    <title>채팅</title>
+</head>
+
+<body>
+    <div class="chat-wrapper">
+
+        <div class="header-area">
+            <button class="back-btn" onclick="location.href='/main'">뒤로가기</button>
+            <h2 class="chat-title">로딩 중...</h2>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="메시지를 입력하세요…" autocomplete="off">
+            <button id="sendBtn">전송</button>
+        </div>
+    </div>
+
+    <script src="/js/chat.js" defer></script>
+
+</body>
+
+</html>

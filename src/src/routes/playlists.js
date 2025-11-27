@@ -63,13 +63,7 @@ router.get('/search/title', async (req, res) => {
 router.get('/:emotion', async (req, res) => {
     const emotion = req.params.emotion;
 
-    // DB에 존재하는 감정 및 추가 예정인 감정 허용 목록
-    const allowed = [
-        'happy', 'sad', 'calm', 'excited', 
-        'epic', 'nostalgic', 
-        'drive', 'party', 'focus', 'romance'
-    ];
-    
+    const allowed = ['happy', 'sad', 'calm', 'excited'];
     if (!allowed.includes(emotion)) {
         return res.status(400).json({ message: '잘못된 감정 유형입니다.' });
     }
@@ -88,7 +82,6 @@ router.get('/:emotion', async (req, res) => {
             JOIN users u ON p.user_id = u.id
             WHERE e.emotion_key = ? 
               AND p.status = 'AVAILABLE'
-            ORDER BY RAND() LIMIT 20
         `;
 
         const emotionKey = emotion.charAt(0).toUpperCase() + emotion.slice(1);

@@ -93,36 +93,26 @@ async function fetchCurrentUser() {
     }
 }
 
-//섹션 로딩 로직 (기존 구조 유지 + Epic, Nostalgic 추가)
+//섹션 로딩 로직
 async function loadAllSections() {
     const recommendList = document.getElementById('list-recommend');
     const happyList = document.getElementById('list-happy');
     const sadList = document.getElementById('list-sad');
     const calmList = document.getElementById('list-calm');
     const excitedList = document.getElementById('list-excited');
-    
-    // [추가됨] 새로운 감정 요소 가져오기
-    const epicList = document.getElementById('list-epic');
-    const nostalgicList = document.getElementById('list-nostalgic');
 
     const [
         recommendResponse,
         happyResponse,
         sadResponse,
         calmResponse,
-        excitedResponse,
-        // [추가됨] 새로운 감정 fetch
-        epicResponse,
-        nostalgicResponse
+        excitedResponse
     ] = await Promise.all([
         fetch('/api/playlists'),
         fetch('/api/playlists/happy'),
         fetch('/api/playlists/sad'),
         fetch('/api/playlists/calm'),
-        fetch('/api/playlists/excited'),
-        // [추가됨] 새로운 감정 API 호출
-        fetch('/api/playlists/epic'),
-        fetch('/api/playlists/nostalgic')
+        fetch('/api/playlists/excited')
     ]).catch(err => {
         console.error("플레이리스트 로드 중 오류:", err);
     });
@@ -137,10 +127,6 @@ async function loadAllSections() {
     if (sadResponse?.ok) loadAndInject(await sadResponse.json(), sadList);
     if (calmResponse?.ok) loadAndInject(await calmResponse.json(), calmList);
     if (excitedResponse?.ok) loadAndInject(await excitedResponse.json(), excitedList);
-    
-    // [추가됨] 새로운 감정 데이터 주입
-    if (epicResponse?.ok) loadAndInject(await epicResponse.json(), epicList);
-    if (nostalgicResponse?.ok) loadAndInject(await nostalgicResponse.json(), nostalgicList);
 }
 
 //플레이리스트 주입 로직
@@ -154,7 +140,7 @@ async function loadAndInject(playlists, targetUlElement) {
         const listId = getPlaylistIdFromUrl(playlist.youtube_url);
         const thumbnailUrl =
             videoId
-                ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
+                ? `https://img.youtube.com/vi/${videoId}/0.jpg`
                 : '/images/default_thumbnail.jpg';
 
         const listItem = document.createElement('li');
@@ -163,20 +149,20 @@ async function loadAndInject(playlists, targetUlElement) {
         listItem.innerHTML = `
             <a href="#">
                 <div class="musicprofile" data-list-id="${listId}" data-video-id="${videoId}">
-                    <img src="${thumbnailUrl}" alt="${playlist.title}" onerror="this.src='/images/no_img.png'">
-                    <div class="play-icon"></div>
+                    <img src="${thumbnailUrl}" alt="${playlist.title}">
                 </div>
                 <div class="desc">
-                    <p class="playlist-title">${playlist.title}</p>
-                    <p class="playlist-info">
-                        <span class="singer">${playlist.username}</span>
+                    <p>${playlist.title}</p>
+                    <p>EP • 
+                        <a href="/singer_intro?id=${playlist.user_id}" class="singer">
+                            ${playlist.username}
+                        </a>
                     </p>
                 </div>
             </a>
         `;
 
-        listItem.querySelector('.musicprofile').addEventListener('click', (e) => {
-            e.preventDefault();
+        listItem.querySelector('.musicprofile').addEventListener('click', () => {
             if (listId) playMusic(listId);
             else if (videoId) playMusic(videoId, true);
             else alert('유효하지 않은 재생목록입니다.');

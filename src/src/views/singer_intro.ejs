@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Singer_Intro</title>
+    <link rel="stylesheet" href="/css/searchbar.css">
+    <link rel="stylesheet" href="/css/intro.css">
+    <script src="/js/intro.js" defer></script>
+</head>
+
+<body>
+    <div class="homepage">
+        <%- include('partials/searchbar') %>
+
+            <div class="pf" style="background-image: url('<%= profileImage %>');">
+                <img id="profileImg" class="<%= isMe ? 'clickable' : '' %>" src="<%= profileImage %>">
+
+                <% if (isMe) { %>
+                    <input type="file" id="profileUpload" accept="image/*" style="display:none;">
+                    <% } %>
+
+                        <div class="_name">
+                            <p>
+                                <%= profileName %>
+                            </p>
+                        </div>
+
+                        <div class="_button">
+                            <% if (!isMe) { %>
+                                <% switch(relationStatus) { case 'FRIEND' : %>
+                                    <button class="subscribe action-btn" data-action="delete"
+                                        data-target-id="<%= targetUserId %>">
+                                        친구끊기
+                                    </button>
+                                    <% break; case 'PENDING_SENT' : %>
+                                        <button class="action-btn" data-action="delete"
+                                            data-target-id="<%= targetUserId %>"
+                                            style="color:orange; border-color:orange;">
+                                            신청취소
+                                        </button>
+                                        <% break; case 'PENDING_RECEIVED' : %>
+                                            <button class="action-btn" data-action="accept"
+                                                data-target-id="<%= targetUserId %>"
+                                                style="color:green; border-color:green; margin-right:5px;">
+                                                수락
+                                            </button>
+                                            <button class="action-btn" data-action="delete"
+                                                data-target-id="<%= targetUserId %>">
+                                                거절
+                                            </button>
+                                            <% break; default: %> <button class="action-btn" data-action="request"
+                                                    data-target-id="<%= targetUserId %>">
+                                                    친구신청
+                                                </button>
+                                                <% } %>
+                                                    <% } %>
+                        </div>
+            </div>
+
+            <div class="popular_song">
+                <div class="playlist-line">
+                    <h3>내가 등록한 플레이리스트</h3>
+                    <% if (isMe) { %>
+                        <a href="/upload">플레이리스트 등록</a>
+                        <% } %>
+                </div>
+                <ul>
+                    <% if (playlists.length===0) { %>
+                        <li>등록된 플레이리스트가 없습니다.</li>
+                        <% } %>
+                            <% playlists.forEach(p=> { %>
+                                <li>
+                                    <div class="song_name">
+                                        <div class="musicprofile" data-list-id="<%= p.listId %>"
+                                            data-video-id="<%= p.videoId %>">
+                                            <img src="https://img.youtube.com/vi/<%= p.videoId %>/0.jpg">
+                                            <div class="play-icon"></div>
+                                        </div>
+                                        <%= p.title %>
+                                    </div>
+                                    <div class="singer_name">
+                                        <%= profileName %>
+                                    </div>
+                                    <div class="view_count">
+                                        <%= p.created_at.toISOString().substring(0, 10) %>
+                                    </div>
+                                    <div class="song_maker">
+                                        <%= profileName %>
+                                    </div>
+                                </li>
+                                <% }) %>
+                </ul>
+            </div>
+    </div>
+</body>
+
+</html>

@@ -49,12 +49,6 @@ router.get('/history/:roomId', async (req, res) => {
     if (!myId) return res.status(401).json({ message: '로그인이 필요합니다.' });
 
     try {
-        // [추가됨] 상대방이 보낸 메시지(sender_id != myId)를 읽음(is_read = 1) 처리
-        await pool.query(
-            'UPDATE chat_messages SET is_read = 1 WHERE room_id = ? AND sender_id != ?',
-            [roomId, myId]
-        );
-
         const sql = 'SELECT * FROM chat_messages WHERE room_id = ? ORDER BY created_at ASC';
         const [messages] = await pool.query(sql, [roomId]);
         res.json(messages);

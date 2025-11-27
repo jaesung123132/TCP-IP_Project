@@ -7,7 +7,7 @@ console.log("db.js loaded");
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'rootroot',
+    password: 'root1234',
     database: 'music_db',
     port: 3306,
     waitForConnections: true,
