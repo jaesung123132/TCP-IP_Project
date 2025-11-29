@@ -19,17 +19,13 @@ const sessionMiddleware = session({
 });
 app.use(sessionMiddleware);
 
-// ==========================================
-// [추가됨] 모든 페이지에서 내 프로필 사진을 쓸 수 있게 해주는 미들웨어
-// ==========================================
+// 프로필 이미지 로드 미들웨어
 app.use(async (req, res, next) => {
-    res.locals.myProfileImg = null; // 기본값 (비로그인 상태)
+    res.locals.myProfileImg = null;
 
     if (req.session.userId) {
         try {
-            // DB에서 현재 로그인한 유저의 프로필 이미지 조회
             const [rows] = await pool.query('SELECT profile_image FROM users WHERE id = ?', [req.session.userId]);
-
             if (rows.length > 0) {
                 res.locals.myProfileImg = rows[0].profile_image || '/uploads/profile/Default_profile.png';
             }
@@ -46,7 +42,6 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 // 라우터 등록
 const loginRouter = require('./routes/login');
@@ -68,7 +63,7 @@ app.use('/upload', uploadRouter);
 
 app.get('/chat', (req, res) => res.render('chat'));
 
-// 404
+// 404 처리
 app.use((req, res) => res.status(404).render('404'));
 
 const server = http.createServer(app);
@@ -92,6 +87,7 @@ server.on('upgrade', (request, socket, head) => {
 const chatRooms = new Map();
 const userConnections = new Map();
 
+// 웹소켓 연결 처리
 wss.on('connection', (ws, req) => {
     const currentUserId = ws.session.userId;
 
@@ -99,7 +95,7 @@ wss.on('connection', (ws, req) => {
         userConnections.set(currentUserId, new Set());
     }
     userConnections.get(currentUserId).add(ws);
-    console.log(`[WS 서버] 유저 ${currentUserId}가 인증되었습니다. (현재 ${userConnections.get(currentUserId).size}개 연결)`);
+    console.log(`[WS 서버] 유저 ${currentUserId} 접속`);
 
     broadcastStatusToFriends(currentUserId, true);
 
@@ -117,13 +113,31 @@ wss.on('connection', (ws, req) => {
                     chatRooms.set(currentRoomId, new Set());
                 }
                 chatRooms.get(currentRoomId).add(ws);
-                console.log(`[WS 서버] 클라이언트가 ${currentRoomId}번 방에 참여했습니다.`);
             }
 
+            // [입력 중 상태 전송] 
+            if (data.type === 'typing') {
+                const { roomId, isTyping } = data;
+                if (chatRooms.has(roomId)) {
+                    chatRooms.get(roomId).forEach(client => {
+                        
+                        if (client !== ws && client.readyState === ws.OPEN) {
+                            client.send(JSON.stringify({ 
+                                type: 'typing_status', 
+                                senderId: currentUserId,
+                                isTyping: isTyping 
+                            }));
+                        }
+                    });
+                }
+            }
+
+            // [채팅 메시지 전송]
             if (data.type === 'chat') {
                 const { roomId, content, recipientId } = data;
                 const senderId = currentUserId;
 
+                // DB 저장
                 const sql = 'INSERT INTO chat_messages (room_id, sender_id, content) VALUES (?, ?, ?)';
                 const [result] = await pool.query(sql, [roomId, senderId, content]);
                 const messageId = result.insertId;
@@ -137,6 +151,7 @@ wss.on('connection', (ws, req) => {
                     created_at: new Date().toISOString()
                 };
 
+                // 같은 방에 있는 사람들에게 전송
                 if (chatRooms.has(roomId)) {
                     chatRooms.get(roomId).forEach(client => {
                         if (client.readyState === ws.OPEN) {
@@ -145,14 +160,13 @@ wss.on('connection', (ws, req) => {
                     });
                 }
 
+                // 채팅방 밖에 있는 친구에게 알림 전송
                 const recipientSocketSet = userConnections.get(recipientId);
                 if (recipientSocketSet) {
                     let recipientIsInRoom = false;
                     if (chatRooms.has(roomId)) {
                         recipientSocketSet.forEach(clientWs => {
-                            if (chatRooms.get(roomId).has(clientWs)) {
-                                recipientIsInRoom = true;
-                            }
+                            if (chatRooms.get(roomId).has(clientWs)) recipientIsInRoom = true;
                         });
                     }
 
@@ -178,10 +192,13 @@ wss.on('connection', (ws, req) => {
                 userSockets.delete(ws);
                 if (userSockets.size === 0) {
                     userConnections.delete(currentUserId);
-                    console.log(`[WS 서버] 유저 ${currentUserId} 연결 모두 종료.`);
                     broadcastStatusToFriends(currentUserId, false);
                 }
             }
+           
+            chatRooms.forEach((clients, roomId) => {
+                if (clients.has(ws)) clients.delete(ws);
+            });
         }
     });
 });
@@ -189,12 +206,7 @@ wss.on('connection', (ws, req) => {
 async function broadcastStatusToFriends(userId, isOnline) {
     try {
         const statusType = isOnline ? 'friend_online' : 'friend_offline';
-
-        const sql = `
-            SELECT IF(user_one_id = ?, user_two_id, user_one_id) AS friend_id
-            FROM friends
-            WHERE (user_one_id = ? OR user_two_id = ?) AND status = 'ACCEPTED'
-        `;
+        const sql = `SELECT IF(user_one_id = ?, user_two_id, user_one_id) AS friend_id FROM friends WHERE (user_one_id = ? OR user_two_id = ?) AND status = 'ACCEPTED'`;
         const [friends] = await pool.query(sql, [userId, userId, userId]);
 
         friends.forEach(friend => {
@@ -208,17 +220,13 @@ async function broadcastStatusToFriends(userId, isOnline) {
             }
         });
     } catch (error) {
-        console.error('친구 상태 브로드캐스트 오류:', error);
+        console.error('친구 상태 오류:', error);
     }
 }
 
 async function getFriendsOnlineStatus(userId) {
     const statuses = {};
-    const sql = `
-        SELECT IF(user_one_id = ?, user_two_id, user_one_id) AS friend_id
-        FROM friends
-        WHERE (user_one_id = ? OR user_two_id = ?) AND status = 'ACCEPTED'
-    `;
+    const sql = `SELECT IF(user_one_id = ?, user_two_id, user_one_id) AS friend_id FROM friends WHERE (user_one_id = ? OR user_two_id = ?) AND status = 'ACCEPTED'`;
     const [friends] = await pool.query(sql, [userId, userId, userId]);
     friends.forEach(friend => {
         statuses[friend.friend_id] = userConnections.has(friend.friend_id);
@@ -226,10 +234,14 @@ async function getFriendsOnlineStatus(userId) {
     return statuses;
 }
 
-server.listen(port, () => {
-    console.log(`Express 웹 서버가 http://localhost:${port}/login 에서 실행중입니다.`);
-});
+// // 핫스팟 IP로 서버 실행
+// server.listen(port, '0.0.0.0', () => {
+//     console.log(`Express 웹 서버가 실행중입니다.`);
+//     console.log(`- 내부 접속: http://localhost:${port}`);
+//     console.log(`- 친구 접속: http://172.20.10.3:${port}`);
+// });
 
+// TCP 서버 (모니터링용)
 const allClients = [];
 const tcpServer = net.createServer((socket) => {
     console.log('[TCP 서버] 클라이언트가 접속했습니다.');
@@ -255,4 +267,4 @@ setInterval(() => {
 }, 5000);
 tcpServer.listen(5000, () => {
     console.log('TCP 소켓 서버가 5000번 포트에서 실행 중입니다.');
-}); 
+});

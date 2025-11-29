@@ -181,3 +181,37 @@ body {
     text-align: center;
     background: #222;
 }
+.typing-indicator {
+    position: absolute;
+    bottom: 85px;
+    left: 20px; 
+    
+  
+    background-color: #2a2a2a;  
+    color: #e0e0e0;         
+    padding: 12px 18px;     
+    border-radius: 20px;      
+    border-bottom-left-radius: 4px; 
+    
+
+    font-size: 15px;           
+    font-weight: 500;
+    
+    /* 기타 설정 */
+    display: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 100;
+    animation: blink 1.5s infinite ease-in-out;
+}
+
+.typing-indicator.active {
+    display: block;
+}
+
+/* 껌벅이는 효과 */
+@keyframes blink {
+    0% { opacity: 0.4; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-2px); } 
+    
+    100% { opacity: 0.4; transform: translateY(0); }
+}

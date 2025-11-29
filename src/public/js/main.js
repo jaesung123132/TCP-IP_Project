@@ -93,7 +93,7 @@ async function fetchCurrentUser() {
     }
 }
 
-//섹션 로딩 로직 (기존 구조 유지 + Epic, Nostalgic 추가)
+//섹션 로딩 로직 (원래 방식 유지 + Epic/Nostalgic 추가)
 async function loadAllSections() {
     const recommendList = document.getElementById('list-recommend');
     const happyList = document.getElementById('list-happy');
@@ -101,7 +101,7 @@ async function loadAllSections() {
     const calmList = document.getElementById('list-calm');
     const excitedList = document.getElementById('list-excited');
     
-    // [추가됨] 새로운 감정 요소 가져오기
+    // [추가됨] 
     const epicList = document.getElementById('list-epic');
     const nostalgicList = document.getElementById('list-nostalgic');
 
@@ -111,7 +111,7 @@ async function loadAllSections() {
         sadResponse,
         calmResponse,
         excitedResponse,
-        // [추가됨] 새로운 감정 fetch
+        // [추가됨]
         epicResponse,
         nostalgicResponse
     ] = await Promise.all([
@@ -120,7 +120,7 @@ async function loadAllSections() {
         fetch('/api/playlists/sad'),
         fetch('/api/playlists/calm'),
         fetch('/api/playlists/excited'),
-        // [추가됨] 새로운 감정 API 호출
+        // [추가됨]
         fetch('/api/playlists/epic'),
         fetch('/api/playlists/nostalgic')
     ]).catch(err => {
@@ -138,12 +138,12 @@ async function loadAllSections() {
     if (calmResponse?.ok) loadAndInject(await calmResponse.json(), calmList);
     if (excitedResponse?.ok) loadAndInject(await excitedResponse.json(), excitedList);
     
-    // [추가됨] 새로운 감정 데이터 주입
+    // [추가됨]
     if (epicResponse?.ok) loadAndInject(await epicResponse.json(), epicList);
     if (nostalgicResponse?.ok) loadAndInject(await nostalgicResponse.json(), nostalgicList);
 }
 
-//플레이리스트 주입 로직
+//플레이리스트 주입 로직 (닉네임 클릭 수정됨)
 async function loadAndInject(playlists, targetUlElement) {
     if (!targetUlElement || !playlists) return;
 
@@ -160,21 +160,24 @@ async function loadAndInject(playlists, targetUlElement) {
         const listItem = document.createElement('li');
         listItem.className = 'list';
 
+        // <a> 태그 중첩 제거 (겉의 a태그 삭제)
         listItem.innerHTML = `
-            <a href="#">
-                <div class="musicprofile" data-list-id="${listId}" data-video-id="${videoId}">
-                    <img src="${thumbnailUrl}" alt="${playlist.title}" onerror="this.src='/images/no_img.png'">
-                    <div class="play-icon"></div>
-                </div>
-                <div class="desc">
-                    <p class="playlist-title">${playlist.title}</p>
-                    <p class="playlist-info">
-                        <span class="singer">${playlist.username}</span>
-                    </p>
-                </div>
-            </a>
+            <div class="musicprofile" data-list-id="${listId}" data-video-id="${videoId}" style="cursor: pointer;">
+                <img src="${thumbnailUrl}" alt="${playlist.title}" onerror="this.src='/images/no_img.png'">
+                <div class="play-icon"></div>
+            </div>
+            <div class="desc">
+                <p class="playlist-title">${playlist.title}</p>
+                <p class="playlist-info">
+                    EP • 
+                    <a href="/singer_intro?id=${playlist.user_id}" class="singer">
+                        ${playlist.username}
+                    </a>
+                </p>
+            </div>
         `;
 
+        // 썸네일 클릭 시 재생
         listItem.querySelector('.musicprofile').addEventListener('click', (e) => {
             e.preventDefault();
             if (listId) playMusic(listId);
@@ -415,7 +418,7 @@ async function performSearch(query) {
     }
 }
 
-//검색 결과 표시
+//검색 결과 표시 (닉네임 클릭 수정됨)
 function displaySearchResults(results, query, container) {
     container.innerHTML = '';
     const contentDiv = document.createElement('div');
@@ -437,20 +440,18 @@ function displaySearchResults(results, query, container) {
         const listId = getPlaylistIdFromUrl(playlist.youtube_url);
         const thumbnailUrl =
             videoId
-                ? `https://img.youtube.com/vi/${videoId}/0.jpg`
+                ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
                 : '/images/default_thumbnail.jpg';
 
         return `
             <li class="list">
-                <a href="#">
-                    <div class="musicprofile" data-list-id="${listId}" data-video-id="${videoId}">
-                        <img src="${thumbnailUrl}" alt="${playlist.title}">
-                    </div>
-                    <div class="desc">
-                        <p>${playlist.title}</p>
-                        <p>EP • <a href="/singer_intro?id=${playlist.user_id}" class="singer">${playlist.username}</a></p>
-                    </div>
-                </a>
+                <div class="musicprofile" data-list-id="${listId}" data-video-id="${videoId}" style="cursor: pointer;">
+                    <img src="${thumbnailUrl}" alt="${playlist.title}">
+                </div>
+                <div class="desc">
+                    <p>${playlist.title}</p>
+                    <p>EP • <a href="/singer_intro?id=${playlist.user_id}" class="singer">${playlist.username}</a></p>
+                </div>
             </li>
         `;
     }).join('');
