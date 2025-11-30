@@ -235,11 +235,11 @@ async function getFriendsOnlineStatus(userId) {
 }
 
 // // 핫스팟 IP로 서버 실행
-// server.listen(port, '0.0.0.0', () => {
-//     console.log(`Express 웹 서버가 실행중입니다.`);
-//     console.log(`- 내부 접속: http://localhost:${port}`);
-//     console.log(`- 친구 접속: http://172.20.10.3:${port}`);
-// });
+ server.listen(port, '0.0.0.0', () => {
+     console.log(`Express 웹 서버가 실행중입니다.`);
+    console.log(`- 내부 접속: http://localhost:${port}`);
+//     console.log(`- 외부 접속: http://172.20.10.3:${port}`);
+ });
 
 // TCP 서버 (모니터링용)
 const allClients = [];

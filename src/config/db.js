@@ -6,8 +6,8 @@ console.log("db.js loaded");
 // Promise 기반 Connection Pool
 const pool = mysql.createPool({
     host: 'localhost',
-    user: 'root',
-    password: 'rootroot',
+    user: 'db202245059',
+    password: 'db202245059',
     database: 'music_db',
     port: 3306,
     waitForConnections: true,
