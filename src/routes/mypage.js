@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
     const userId = req.session.userId; // 나
     const pageUserId = req.query.id || userId; // 보고 있는 프로필 주인
 
-    if (!userId) return res.redirect('/login');
+    if (!userId) return res.redirect('/playlist/login');
 
     try {
         // [A] 유저 정보

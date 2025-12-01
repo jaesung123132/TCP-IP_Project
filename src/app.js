@@ -37,6 +37,7 @@ app.use(async (req, res, next) => {
 });
 
 // 정적 파일 / 파서 / 뷰 엔진 설정
+app.use('/playlist', express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -52,14 +53,14 @@ const playlistsRouter = require('./routes/playlists');
 const mypageRouter = require('./routes/mypage');
 const chatRouter = require('./routes/chat');
 
-app.use('/login', loginRouter);
-app.use('/api', authRouter);
-app.use('/main', mainRouter);
-app.use('/api/friends', friendsRouter);
-app.use('/api/playlists', playlistsRouter);
-app.use('/singer_intro', mypageRouter);
-app.use('/api/chat', chatRouter);
-app.use('/upload', uploadRouter);
+app.use('/playlist/login', loginRouter);
+app.use('/playlist/api', authRouter);
+app.use('/playlist/main', mainRouter);
+app.use('/playlist/api/friends', friendsRouter);
+app.use('/playlist/api/playlists', playlistsRouter);
+app.use('/playlist/singer_intro', mypageRouter);
+app.use('/playlist/api/chat', chatRouter);
+app.use('/playlist/upload', uploadRouter);
 
 app.get('/chat', (req, res) => res.render('chat'));
 
@@ -120,12 +121,12 @@ wss.on('connection', (ws, req) => {
                 const { roomId, isTyping } = data;
                 if (chatRooms.has(roomId)) {
                     chatRooms.get(roomId).forEach(client => {
-                        
+
                         if (client !== ws && client.readyState === ws.OPEN) {
-                            client.send(JSON.stringify({ 
-                                type: 'typing_status', 
+                            client.send(JSON.stringify({
+                                type: 'typing_status',
                                 senderId: currentUserId,
-                                isTyping: isTyping 
+                                isTyping: isTyping
                             }));
                         }
                     });
@@ -195,7 +196,7 @@ wss.on('connection', (ws, req) => {
                     broadcastStatusToFriends(currentUserId, false);
                 }
             }
-           
+
             chatRooms.forEach((clients, roomId) => {
                 if (clients.has(ws)) clients.delete(ws);
             });
@@ -235,11 +236,11 @@ async function getFriendsOnlineStatus(userId) {
 }
 
 // // 핫스팟 IP로 서버 실행
- server.listen(port, '0.0.0.0', () => {
-     console.log(`Express 웹 서버가 실행중입니다.`);
+server.listen(port, '0.0.0.0', () => {
+    console.log(`Express 웹 서버가 실행중입니다.`);
     console.log(`- 내부 접속: http://localhost:${port}`);
-//     console.log(`- 외부 접속: http://172.20.10.3:${port}`);
- });
+    //     console.log(`- 외부 접속: http://172.20.10.3:${port}`);
+});
 
 // TCP 서버 (모니터링용)
 const allClients = [];

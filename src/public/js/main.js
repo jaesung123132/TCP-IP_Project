@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function fetchCurrentUser() {
     try {
-        const response = await fetch('/api/me');
+        const response = await fetch('/playlist/api/me');
         if (!response.ok) throw new Error('인증 정보 로드 실패');
         const user = await response.json();
 
@@ -83,12 +83,12 @@ async function fetchCurrentUser() {
             return true;
         } else {
             alert('로그인이 필요합니다.');
-            window.location.href = '/';
+            window.location.href = '/playlist/';
             return false;
         }
     } catch (error) {
         console.error(error);
-        window.location.href = '/';
+        window.location.href = '/playlist/';
         return false;
     }
 }
@@ -100,7 +100,7 @@ async function loadAllSections() {
     const sadList = document.getElementById('list-sad');
     const calmList = document.getElementById('list-calm');
     const excitedList = document.getElementById('list-excited');
-    
+
     // [추가됨] 
     const epicList = document.getElementById('list-epic');
     const nostalgicList = document.getElementById('list-nostalgic');
@@ -115,14 +115,14 @@ async function loadAllSections() {
         epicResponse,
         nostalgicResponse
     ] = await Promise.all([
-        fetch('/api/playlists'),
-        fetch('/api/playlists/happy'),
-        fetch('/api/playlists/sad'),
-        fetch('/api/playlists/calm'),
-        fetch('/api/playlists/excited'),
+        fetch('/playlist/api/playlists'),
+        fetch('/playlist/api/playlists/happy'),
+        fetch('/playlist/api/playlists/sad'),
+        fetch('/playlist/api/playlists/calm'),
+        fetch('/playlist/api/playlists/excited'),
         // [추가됨]
-        fetch('/api/playlists/epic'),
-        fetch('/api/playlists/nostalgic')
+        fetch('/playlist/api/playlists/epic'),
+        fetch('/playlist/api/playlists/nostalgic')
     ]).catch(err => {
         console.error("플레이리스트 로드 중 오류:", err);
     });
@@ -137,7 +137,7 @@ async function loadAllSections() {
     if (sadResponse?.ok) loadAndInject(await sadResponse.json(), sadList);
     if (calmResponse?.ok) loadAndInject(await calmResponse.json(), calmList);
     if (excitedResponse?.ok) loadAndInject(await excitedResponse.json(), excitedList);
-    
+
     // [추가됨]
     if (epicResponse?.ok) loadAndInject(await epicResponse.json(), epicList);
     if (nostalgicResponse?.ok) loadAndInject(await nostalgicResponse.json(), nostalgicList);
@@ -170,7 +170,7 @@ async function loadAndInject(playlists, targetUlElement) {
                 <p class="playlist-title">${playlist.title}</p>
                 <p class="playlist-info">
                     EP • 
-                    <a href="/singer_intro?id=${playlist.user_id}" class="singer">
+                    <a href="/playlist/singer_intro?id=${playlist.user_id}" class="singer">
                         ${playlist.username}
                     </a>
                 </p>
@@ -192,7 +192,7 @@ async function loadAndInject(playlists, targetUlElement) {
 async function loadFriendsList() {
     if (!friendListUl) return;
     try {
-        const response = await fetch('/api/friends');
+        const response = await fetch('/playlist/api/friends');
         if (!response.ok) throw new Error('친구 목록 로딩 실패');
 
         const data = await response.json();
@@ -207,7 +207,7 @@ async function loadFriendsList() {
                     const profileImg = req.profile_image || '/uploads/profile/Default_profile.png';
                     return `
                         <li class="request-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#222; margin-bottom:5px; border-radius:5px;">
-                            <div class="request-info" onclick="location.href='/singer_intro?id=${req.friend_id}'" style="display:flex; align-items:center; cursor:pointer;">
+                            <div class="request-info" onclick="location.href='/playlist/singer_intro?id=${req.friend_id}'" style="display:flex; align-items:center; cursor:pointer;">
                                 <img src="${profileImg}" style="width:30px; height:30px; border-radius:50%; margin-right:8px; object-fit:cover;">
                                 <span style="font-size:13px; color:white;">${req.friend_name}</span>
                             </div>
@@ -252,7 +252,7 @@ async function loadFriendsList() {
                 // 왼쪽 정렬을 위한 HTML 구조 변경
                 li.innerHTML = `
                     <img src="${profileImg}" 
-                         onclick="event.stopPropagation(); location.href='/singer_intro?id=${friend.friend_id}'"
+                         onclick="event.stopPropagation(); location.href='/playlist/singer_intro?id=${friend.friend_id}'"
                          style="width:40px; height:40px; border-radius:50%; margin-right:0; object-fit:cover; cursor:pointer; border:1px solid #333;">
                     
                     <div class="text-info">
@@ -286,7 +286,7 @@ async function loadFriendsList() {
                         });
                     }
 
-                    window.location.href = `/chat?friendId=${friend.friend_id}`;
+                    window.location.href = `/playlist/chat?friendId=${friend.friend_id}`;
                 });
                 friendListUl.appendChild(li);
             });
@@ -299,7 +299,8 @@ async function loadFriendsList() {
 
 
 function connectMainWebSocket() {
-    ws = new WebSocket(`ws://${window.location.host}`);
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${protocol}//${window.location.host}`);
 
     ws.onopen = () => {
         console.log("메인 웹소켓 연결 성공");
@@ -409,7 +410,7 @@ async function performSearch(query) {
 
     try {
         contentContainer.innerHTML = '<h1>검색 중...</h1>';
-        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const response = await fetch(`/playlist/api/search?q=${encodeURIComponent(query)}`);
         if (!response.ok) throw new Error('검색 서버 응답 실패');
         const results = await response.json();
         displaySearchResults(results, query, contentContainer);
@@ -450,7 +451,7 @@ function displaySearchResults(results, query, container) {
                 </div>
                 <div class="desc">
                     <p>${playlist.title}</p>
-                    <p>EP • <a href="/singer_intro?id=${playlist.user_id}" class="singer">${playlist.username}</a></p>
+                    <p>EP • <a href="/playlist/singer_intro?id=${playlist.user_id}" class="singer">${playlist.username}</a></p>
                 </div>
             </li>
         `;
@@ -615,11 +616,11 @@ function setupLogoutButton() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             try {
-                const response = await fetch('/api/logout', { method: 'POST' });
+                const response = await fetch('/playlist/api/logout', { method: 'POST' });
                 const data = await response.json();
                 if (data.success) {
                     alert('로그아웃 되었습니다.');
-                    window.location.href = '/login';
+                    window.location.href = '/playlist/login';
                 }
             } catch (error) {
                 console.error('로그아웃 오류:', error);
@@ -633,7 +634,7 @@ window.respondToRequest = async function (targetId, action) {
     if (!confirm(action === 'accept' ? '수락하시겠습니까?' : '거절하시겠습니까?')) return;
 
     try {
-        const res = await fetch('/api/friends/action', {
+        const res = await fetch('/playlist/api/friends/action', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ targetId, action })

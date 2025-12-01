@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const input = document.getElementById("chatInput");
     const box = document.getElementById("chatBox");
     const sendBtn = document.getElementById("sendBtn");
-    
+
     // [추가] 입력 중 표시를 위한 DOM 생성
     const typingIndicator = document.createElement("div");
     typingIndicator.className = "typing-indicator";
@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         friendId = parseInt(params.get('friendId'));
         if (!friendId) throw new Error('상대방 정보 없음');
 
-        const meResponse = await fetch('/api/me');
+        const meResponse = await fetch('/playlist/api/me');
         const me = await meResponse.json();
         if (!me.isLoggedIn) {
-            window.location.href = '/';
+            window.location.href = '/playlist/';
             return;
         }
         myId = me.userId;
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
         console.error("오류:", error);
-        if(box) box.innerHTML = "<div style='text-align:center; padding:20px; color:#888;'>연결 실패</div>";
+        if (box) box.innerHTML = "<div style='text-align:center; padding:20px; color:#888;'>연결 실패</div>";
     }
 
     function extractYouTubeId(url) {
@@ -48,19 +48,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     async function getRoomId(myId, friendId) {
-        const response = await fetch('/api/chat/room', {
+        const response = await fetch('/playlist/api/chat/room', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ myId, friendId })
         });
         const data = await response.json();
         const titleEl = document.querySelector('.chat-title');
-        if(titleEl) titleEl.textContent = `${data.friendName}님`;
+        if (titleEl) titleEl.textContent = `${data.friendName}님`;
         return data.roomId;
     }
 
     async function loadChatHistory(roomId) {
-        const response = await fetch(`/api/chat/history/${roomId}`);
+        const response = await fetch(`/playlist/api/chat/history/${roomId}`);
         const messages = await response.json();
         box.innerHTML = '';
         messages.forEach(appendMessage);
@@ -68,8 +68,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function connectWebSocket(roomId) {
-        ws = new WebSocket(`ws://${window.location.host}`);
-        
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        ws = new WebSocket(`${protocol}//${window.location.host}`);
+
         ws.onopen = () => {
             console.log("WS 연결됨");
             ws.send(JSON.stringify({ type: 'join', roomId: roomId }));
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
-            
+
             // 일반 메시지 수신
             if (message.type === 'chat' && parseInt(message.room_id) === parseInt(roomId)) {
                 appendMessage(message);
@@ -108,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
         ws.send(JSON.stringify(messageData));
         input.value = "";
-        
+
         // 전송 후에는 '입력 멈춤' 신호 전송
         ws.send(JSON.stringify({ type: 'typing', roomId: roomId, isTyping: false }));
     }
@@ -122,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             const date = new Date(msg.created_at);
             timeStr = date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-        } catch(e) { }
+        } catch (e) { }
 
         // [변경됨] 읽음 확인(1) 관련 코드는 모두 삭제했습니다.
 
@@ -165,8 +166,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    if(sendBtn) sendBtn.addEventListener("click", sendMessage);
-    if(input) {
+    if (sendBtn) sendBtn.addEventListener("click", sendMessage);
+    if (input) {
         input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") sendMessage();
         });

@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 
     if (!req.session.userId) {
         console.log("→ userId 없음, /login 으로 리다이렉트함");
-        return res.redirect('/login');
+        return res.redirect('/playlist/login');
     }
 
     console.log("→ userId 존재! main.ejs 렌더링 시도");

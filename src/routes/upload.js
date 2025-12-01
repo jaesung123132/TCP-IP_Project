@@ -5,7 +5,7 @@ const pool = require('../config/db');
 // 업로드 페이지
 router.get('/', (req, res) => {
     if (!req.session.userId) {
-        return res.redirect('/login');
+        return res.redirect('/playlist/login');
     }
     res.render('upload');
 });

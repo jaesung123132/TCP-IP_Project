@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
 
         return res.json({
             success: true,
-            redirect: "/main"
+            redirect: "/playlist/main"
         });
 
     } catch (error) {
