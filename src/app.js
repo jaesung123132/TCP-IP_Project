@@ -8,7 +8,7 @@ const pool = require('./config/db');
 const uploadRouter = require('./routes/upload');
 
 const app = express();
-const port = 3000;
+const port = 3003;
 
 // 세션 설정
 const sessionMiddleware = session({
@@ -27,7 +27,7 @@ app.use(async (req, res, next) => {
         try {
             const [rows] = await pool.query('SELECT profile_image FROM users WHERE id = ?', [req.session.userId]);
             if (rows.length > 0) {
-                res.locals.myProfileImg = rows[0].profile_image || '/uploads/profile/Default_profile.png';
+                res.locals.myProfileImg = rows[0].profile_image || '/playlist/uploads/profile/Default_profile.png';
             }
         } catch (err) {
             console.error('프로필 이미지 조회 실패:', err);
@@ -62,7 +62,7 @@ app.use('/playlist/singer_intro', mypageRouter);
 app.use('/playlist/api/chat', chatRouter);
 app.use('/playlist/upload', uploadRouter);
 
-app.get('/chat', (req, res) => res.render('chat'));
+app.get('/playlist/chat', (req, res) => res.render('chat'));
 
 // 404 처리
 app.use((req, res) => res.status(404).render('404'));
@@ -236,7 +236,7 @@ async function getFriendsOnlineStatus(userId) {
 }
 
 // // 핫스팟 IP로 서버 실행
-server.listen(port, '0.0.0.0', () => {
+server.listen(port, () => {
     console.log(`Express 웹 서버가 실행중입니다.`);
     console.log(`- 내부 접속: http://localhost:${port}`);
     //     console.log(`- 외부 접속: http://172.20.10.3:${port}`);

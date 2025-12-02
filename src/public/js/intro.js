@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const fd = new FormData();
             fd.append("profile", file);
             try {
-                const res = await fetch("/singer_intro/profile/upload", { method: "POST", body: fd });
+                const res = await fetch("/playlist/singer_intro/profile/upload", { method: "POST", body: fd });
                 const data = await res.json();
                 if (data.success) { alert("프로필 사진이 변경되었습니다!"); location.reload(); }
                 else { alert("업로드 실패: " + data.message); }
@@ -51,11 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
             try {
-                const response = await fetch('/api/logout', {
+                const response = await fetch('/playlist/api/logout', {
                     method: 'POST', headers: { 'Content-Type': 'application/json' }
                 });
                 const result = await response.json();
-                if (result.success) { alert('로그아웃 되었습니다.'); window.location.href = '/login'; }
+                if (result.success) { alert('로그아웃 되었습니다.'); window.location.href = '/playlist/login'; }
                 else { alert('로그아웃 실패'); }
             } catch (error) { console.error(error); }
         });
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!confirm("정말 진행하시겠습니까?")) return;
 
             try {
-                const res = await fetch('/api/friends/action', {
+                const res = await fetch('/playlist/api/friends/action', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ targetId, action })

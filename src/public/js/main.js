@@ -204,7 +204,7 @@ async function loadFriendsList() {
             if (requests && requests.length > 0) {
                 requestArea.style.display = 'block';
                 requestListUl.innerHTML = requests.map(req => {
-                    const profileImg = req.profile_image || '/uploads/profile/Default_profile.png';
+                    const profileImg = req.profile_image || '/playlist/uploads/profile/Default_profile.png';
                     return `
                         <li class="request-item" style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#222; margin-bottom:5px; border-radius:5px;">
                             <div class="request-info" onclick="location.href='/playlist/singer_intro?id=${req.friend_id}'" style="display:flex; align-items:center; cursor:pointer;">
@@ -236,7 +236,7 @@ async function loadFriendsList() {
                 li.id = `friend-${friend.friend_id}`;
                 li.dataset.id = friend.friend_id;
 
-                const profileImg = friend.profile_image || '/uploads/profile/Default_profile.png';
+                const profileImg = friend.profile_image || '/playlist/uploads/profile/Default_profile.png';
                 const youtubeId = extractYouTubeId(friend.status_message);
 
                 // 유튜브 썸네일 HTML 생성
@@ -300,7 +300,7 @@ async function loadFriendsList() {
 
 function connectMainWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    ws = new WebSocket(`${protocol}//${window.location.host}`);
+    ws = new WebSocket(`${protocol}//${window.location.host}/playlist/`);
 
     ws.onopen = () => {
         console.log("메인 웹소켓 연결 성공");

@@ -34,7 +34,7 @@ loginForm.addEventListener('submit', async (event) => {
     }
 
     try {
-        const response = await fetch('/login', {
+        const response = await fetch('/playlist/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ _id, _pwd }),
@@ -51,7 +51,7 @@ loginForm.addEventListener('submit', async (event) => {
             document.body.classList.add('page-slide-out');
 
             setTimeout(() => {
-                window.location.href = data.redirect || '/main';
+                window.location.href = data.redirect || '/playlist/main';
             }, 1000);
 
         } else {

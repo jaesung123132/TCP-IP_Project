@@ -17,7 +17,7 @@ form.addEventListener("submit", async (e) => {
 
     const videoId = getVideoId(url);
 
-    const res = await fetch("/upload", {
+    const res = await fetch("/playlist/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, url, emotion })
@@ -45,6 +45,6 @@ form.addEventListener("submit", async (e) => {
 
     // 3.8초 후 메인으로 이동
     setTimeout(() => {
-        window.location.href = "/singer_intro";
+        window.location.href = "/playlist/singer_intro";
     }, 2000);
 });

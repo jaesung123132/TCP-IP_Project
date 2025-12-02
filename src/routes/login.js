@@ -51,4 +51,20 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.post('/register', async (req, res) => {
+    const { _id, _mail, _pwd } = req.body;
+
+    try {
+        const hashedPassword = await bcrypt.hash(_pwd, 10);
+        const sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+        await pool.query(sql, [_id, _mail, hashedPassword]);
+
+        res.redirect('/playlist/login');
+
+    } catch (error) {
+        console.error(error);
+        res.redirect('/playlist/login');
+    }
+});
+
 module.exports = router;

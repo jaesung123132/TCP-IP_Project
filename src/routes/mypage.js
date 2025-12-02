@@ -98,7 +98,7 @@ router.get('/', async (req, res) => {
         const profileName = user ? user.username : "알 수 없음";
         const profileImage = (user && user.profile_image)
             ? user.profile_image
-            : "/uploads/profile/Default_profile.png";
+            : "/playlist/uploads/profile/Default_profile.png";
 
         // [D] 데이터 전달
         res.render("singer_intro", {
@@ -125,7 +125,7 @@ router.post('/profile/upload', upload.single('profile'), async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ success: false, message: "파일이 없습니다." });
         }
-        const filePath = `/uploads/profile/${req.file.filename}`;
+        const filePath = `/playlist/uploads/profile/${req.file.filename}`;
 
         await pool.query(
             "UPDATE users SET profile_image = ? WHERE id = ?",

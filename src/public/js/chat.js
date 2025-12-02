@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function connectWebSocket(roomId) {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        ws = new WebSocket(`${protocol}//${window.location.host}`);
+        ws = new WebSocket(`${protocol}//${window.location.host}/playlist/`);
 
         ws.onopen = () => {
             console.log("WS 연결됨");
